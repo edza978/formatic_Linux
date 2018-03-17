@@ -18,6 +18,8 @@ OSID=""
 COR=0
 # % CPU
 PCPU=0
+# Tamaño Disco
+DSK=0
 
 # Menu Inicial
 dialog --menu "Seleccione tarea: " 20 40 4 1 Crear 2 Listar 3 Modificar 4 Eliminar 2> ${OUT}
@@ -53,16 +55,23 @@ if [ ${OPC} -eq 1 ]; then
   ;;
  esac
  # Menu Cores
- MENUPROC="dialog --menu \"Seleccione Linux a instalar: \" 14 40 ${PROCH}"
+ MENUPROC="dialog --menu \"Seleccione cantidad de Cores: \" 14 40 ${PROCH}"
  for((i=1;i<=${PROCH};++i)); do MENUPROC="${MENUPROC} ${i} ${i}"; done
  MENUPROC="${MENUPROC} 2> ${OUT}"
  eval ${MENUPROC}
  COR=$(cat ${OUT})
- MENUCPU="dialog --menu \"Seleccione Linux a instalar: \" 14 40 6"
+ # Menu porcentaje CPU a usar
+ MENUCPU="dialog --menu \"Seleccione porcentaje maximo de CPU a usar: \" 14 40 6"
  for i in $(seq 10 10 60); do MENUCPU="${MENUCPU} ${i} ${i}"; done
  MENUCPU="${MENUCPU} 2> ${OUT}"
  eval ${MENUCPU}
  PCPU=$(cat ${OUT})
+ # Menu tamaño disco
+ MENUDSK="dialog --menu \"Seleccione el tamaño de Disco duro: \" 14 40 4"
+ for i in 500 2048 4096 8192; do MENUDSK="${MENUDSK} ${i} ${i}"; done
+ MENUDSK="${MENUDSK} 2> ${OUT}"
+ eval ${MENUDSK}
+ DSK=$(cat ${OUT})
  
 elif [ ${OPC} -eq 2 ]; then
  dialog --title "VMs Existentes" --msgbox "${VMS}" 10 30
@@ -72,4 +81,4 @@ else
  echo "Eliminar"
 fi
 rm -f ${OUT}
-echo "${VMS} ${NAME} ${OSID}"
+echo "${VMS} ${NAME} ${OSID} ${COR} ${PCPU} ${DSK}"
