@@ -4,13 +4,11 @@ VBM=$(which vboxmanage)
 # Listado de VMs
 VMS=$(${VBM} list vms | tr -d \"| awk '{print $1}')
 # Cantidad cores
-#PROC=$(cat /proc/cpuinfo | grep processor | wc -l)
-PROC=2
+PROC=$(cat /proc/cpuinfo | grep processor | wc -l)
 # Mitad Cores
 PROCH=$(echo $(( PROC * 10 / 20 )))
 # Archivo de salida
-#OUT=$(mktemp)
-OUT=Salida
+OUT=$(mktemp)
 
 # Nombre para VM
 NAME=""
@@ -23,32 +21,9 @@ PCPU=0
 # Tamaño Disco
 DSK=0
 
-function creaMenu()
-{
- # Argumentos recibidos
- ARG=$#
- # Titulo menu
- Title=$1
- shift
- # Iniciar menu
- MENU="dialog --menu \"${Title}\" 14 40 ${ARG}"
- # Optener opciones menu
- while [ ! -z "$1" ]; do
-  OP=$(echo $1 | awk '{print $1}');
-  NOM=$(echo $1 | awk '{print $2}');
-  shift
-  MENU="${MENU} ${OP} ${NOM}";
-  MENU="${MENU} 2> ${OUT}"
- done
- # Ejecutar menu
- eval ${MENU}
- # Obtener seleccion
- OP=$(cat ${OUT})
-# Retornar Opcion indicada.
- echo ${OP}
-}
-
-OPC=$(creaMenu "Seleccione tarea" "1 Crear" "2 Listar" "3 Modificar" "4 Eliminar")
+# Menu Inicial
+dialog --menu "Seleccione tarea: " 20 40 4 1 Crear 2 Listar 3 Modificar 4 Eliminar 2> ${OUT}
+OPC=$(cat ${OUT})
 if [ ${OPC} -eq 1 ]; then
  # Solicitar nombre VM
  dialog --inputbox "Nombre de la VM: " 8 30 2> ${OUT}
@@ -62,7 +37,8 @@ if [ ${OPC} -eq 1 ]; then
   bash $0
  fi
  # Mostrar Linux a instalar
- OPC=$(creaMenu "Selecione Linux a instalar" "1 Debian32" "2 Debian64" "3 RedHat32" "4 RedHat64" "5 Ubuntu32" "6 Ubuntu64")
+ dialog --menu "Seleccione Linux a instalar: " 14 40 6 1 Debian32 2 Debian64 3 RedHat32 4 RedHat64 5 Ubuntu32 6 Ubuntu64 2> ${OUT}
+ OPC=$(cat ${OUT})
  # Asignar ID
  case $OPC in
   1) OSID=Debian
