@@ -97,25 +97,25 @@ if [ ${OPC} -eq 1 ]; then
  rm -f ${OUT}
  echo "${VMS} ${NAME} ${OSID} ${COR} ${PCPU} ${DSK} ${RAM} ${VMRAM}"
 
- echo "Creando la VM ${NAME} con SO ${OSID}"
+ echo "** Creando la VM ${NAME} con SO ${OSID}"
  ${VBM} createvm --name ${NAME} --ostype ${OSID} --register
 
- echo "Asignando ${COR} CPUs a ${NAME}"
+ echo "** Asignando ${COR} CPUs a ${NAME}"
  ${VBM} modifyvm ${NAME} --cpus ${COR}
 
- echo "Asignando restriccion de ${PCPU}% a ${NAME}"
+ echo "** Asignando restriccion de ${PCPU}% a ${NAME}"
  ${VBM} modifyvm ${NAME} --cpuexecutioncap ${PCPU}
 
- echo "Asignando ${VMRAM}MB de RAM a ${NAME}"
+ echo "** Asignando ${VMRAM}MB de RAM a ${NAME}"
  ${VBM} modifyvm ${NAME} --memory ${VMRAM}
 
- echo "Creando disco ${NAME}.vdi de ${DSK}MBs"
+ echo "** Creando disco ${NAME}.vdi de ${DSK}MBs"
  ${VBM} createmedium disk --filename ${HOME}/VirtualBox\ VMs/${NAME}/${NAME}.vdi --size ${DSK} --format VDI
 
- echo "Anexando controlador SATA a la VM ${NAME}"
+ echo "** Anexando controlador SATA a la VM ${NAME}"
  ${VBM} storagectl ${NAME} --name "SATA Controller" --add sata --controller IntelAHCI
 
- echo "Anexando ${NAME}.vdi a la VM ${NAME}"
+ echo "** Anexando ${NAME}.vdi a la VM ${NAME}"
  ${VBM} storageattach ${NAME} --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium ${HOME}/VirtualBox\ VMs/${NAME}/${NAME}.vdi
 
 elif [ ${OPC} -eq 2 ]; then
